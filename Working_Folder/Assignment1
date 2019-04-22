@@ -1,0 +1,45 @@
+# Write your implementation here.
+[corpus_words.extend(i) for i in corpus]
+corpus_words = sorted(list(set(corpus_words)))
+num_corpus_words = len(corpus_words)
+# ------------------
+
+# ------------------
+# Write your implementation here.
+M = np.zeros([len(words),len(words)])
+
+for statements in corpus:
+    for n in range(len(statements)):
+        for k in range(min(window_size,(len(statements)-n-1))):
+            word1 = statements[n]
+            word2 = statements[n+k+1]
+            ind1 = word2Ind[word1]
+            ind2 = word2Ind[word2]
+            M[ind1,ind2] = M[ind1,ind2]+1
+            M[ind2,ind1] = M[ind2,ind1]+1
+
+# ------------------
+
+
+# ------------------
+# Write your implementation here.
+svd = TruncatedSVD(n_components=k, n_iter=n_iters, random_state=42)
+svd.fit(M)
+M_reduced = svd.components_.T
+# ------------------
+
+# ------------------
+# Write your implementation here.
+word2Ind_list  = [word2Ind[x] for x in words]
+x_coords = [M_reduced[x][0] for x in word2Ind_list]
+y_coords = [M_reduced[x][1] for x in word2Ind_list]
+for i,type in enumerate(words):
+    x = x_coords[i]
+    y = y_coords[i]
+    plt.scatter(x, y, marker='x', color='red')
+    plt.text(x+0.01, y+0.1, type, fontsize=9)
+plt.show()
+
+
+
+# ------------------
