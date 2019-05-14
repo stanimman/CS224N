@@ -95,7 +95,7 @@ def naiveSoftmaxLossAndGradient(
     ## GradCenterVec
     ## −(1 − x)u0 +sum((1 − y)uk)
 
-    gradCenterVec = -np.dot((1-x),outsideVectors[outsideWordIdx]) + np.sum(np.dot((1-x),outsideVectors[negSampleWordIndices]))
+    gradCenterVec = -np.dot((1-x),outsideVectors[outsideWordIdx]) + np.sum(np.dot((1-y),outsideVectors[negSampleWordIndices]))
     
     ## gradOutsideVecs
     ## u0 = −(1 − x)vc , uw =  (1 − y)vc
