@@ -103,16 +103,92 @@ def naiveSoftmaxLossAndGradient(
     ### END YOUR CODE
 
     return loss, gradCenterVec, gradOutsideVecs
-    
-    
-    
-    def sigmoid(x):
 
-    if x >= 0:
-        z = exp(-x)
-        return 1 / (1 + z)
-    else:
-        z = exp(x)
-        return z / (1 + z)
+    
+    
+    
+    
+   def sigmoid(x):
 
+    s = 1 / (1 + np.exp(-x))
     return s
+   
+
+    def skipgram(currentCenterWord, windowSize, outsideWords, word2Ind,
+             centerWordVectors, outsideVectors, dataset,
+             word2vecLossAndGradient=naiveSoftmaxLossAndGradient):
+    """ Skip-gram model in word2vec
+
+    Implement the skip-gram model in this function.
+
+    Arguments:
+    currentCenterWord -- a string of the current center word
+    windowSize -- integer, context window size
+    outsideWords -- list of no more than 2*windowSize strings, the outside words
+    word2Ind -- a dictionary that maps words to their indices in
+              the word vector list
+    centerWordVectors -- center word vectors (as rows) for all words in vocab
+                        (V in pdf handout)
+    outsideVectors -- outside word vectors (as rows) for all words in vocab
+                    (U in pdf handout)
+    word2vecLossAndGradient -- the loss and gradient function for
+                               a prediction vector given the outsideWordIdx
+                               word vectors, could be one of the two
+                               loss functions you implemented above.
+
+    Return:
+    loss -- the loss function value for the skip-gram model
+            (J in the pdf handout)
+    gradCenterVecs -- the gradient with respect to the center word vectors
+            (dJ / dV in the pdf handout)
+    gradOutsideVectors -- the gradient with respect to the outside word vectors
+                        (dJ / dU in the pdf handout)
+                        naiveSoftmaxLossAndGradient(
+    centerWordVec,
+    outsideWordIdx,
+    outsideVectors,
+    dataset
+):
+ Naive Softmax loss & gradient function for word2vec models
+
+    Implement the naive softmax loss and gradients between a center word's 
+    embedding and an outside word's embedding. This will be the building block
+    for our word2vec models.
+
+    Arguments:
+    centerWordVec -- numpy ndarray, center word's embedding
+                    (v_c in the pdf handout)
+    outsideWordIdx -- integer, the index of the outside word
+                    (o of u_o in the pdf handout)
+    outsideVectors -- outside vectors (rows of matrix) for all words in vocab
+                      (U in the pdf handout)
+    dataset -- needed for negative sampling, unused here.
+
+    Return:
+    loss -- naive softmax loss
+    gradCenterVec -- the gradient with respect to the center word vector
+                     (dJ / dv_c in the pdf handout)
+    gradOutsideVecs -- the gradient with respect to all the outside word vectors
+                    (dJ / dU)
+
+    """
+
+    loss = 0.0
+    gradCenterVecs = np.zeros(centerWordVectors.shape)
+    gradOutsideVectors = np.zeros(outsideVectors.shape)
+
+    ### YOUR CODE HERE
+    centerWordVec_Ind = word2Ind[currentCenterWord]
+    #print(currentCenterWord)
+    #print(centerWordVec_Ind)
+    centerWordVec = centerWordVectors[centerWordVec_Ind]
+    for i in outsideWords:
+        outsideWordIdx = word2Ind[currentCenterWord]
+        loss_tmp, gradCenterVec_tmp, gradOutsideVecs_tmp = word2vecLossAndGradient(centerWordVec,outsideWordIdx,outsideVectors,dataset)
+        loss = loss+loss_tmp
+        gradCenterVecs = gradCenterVecs + gradCenterVec_tmp
+        gradOutsideVectors = gradOutsideVectors + gradOutsideVecs_tmp
+    #print(centerWordVec)
+    ### END YOUR CODE
+
+    return loss, gradCenterVecs, gradOutsideVectors
