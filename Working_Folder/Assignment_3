@@ -1,0 +1,13 @@
+self.stack = ['ROOT']
+self.buffer = sentence
+self.dependencies = []
+
+if transition == "S":
+  self.stack.append(self.buffer[0])
+  self.buffer = self.buffer[1:]
+if transition == "LA":
+  self.dependencies.append((self.stack[-1],self.stack[-2]))
+  self.stack.pop(-2)
+if transition == "RA":
+  self.dependencies.append((self.stack[-2],self.stack[-1]))
+  self.stack.pop(-1)
