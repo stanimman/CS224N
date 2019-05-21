@@ -11,3 +11,20 @@ if transition == "LA":
 if transition == "RA":
   self.dependencies.append((self.stack[-2],self.stack[-1]))
   self.stack.pop(-1)
+
+
+## Pytorch - nn 
+self.embed_to_hidden = torch.nn.Linear(embed_size,hidden_size)
+self.embed_to_hidden.weight = nn.init.xavier_uniform_(self.embed_to_hidden.weight)
+self.dropout = nn.Dropout(p=dropout_prob)
+self.hidden_to_logits = torch.nn.Linear(hidden_size, n_classes, bias=True)
+self.hidden_to_logits.weight = nn.init.xavier_uniform_(self.hidden_to_logits.weight)
+
+x_embed = self.pretrained_embeddings(t)
+x = x_embed.view(t.shape[0],-1)
+
+embed_layer = self.embedding_lookup(t)
+h1 = self.embed_to_hidden(embed_layer)
+h1 = nn.ReLU(h1)
+do = self.dropout(h1)
+logits = self.hidden_to_logits(do)
