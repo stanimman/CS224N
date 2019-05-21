@@ -28,3 +28,11 @@ h1 = self.embed_to_hidden(embed_layer)
 h1 = nn.ReLU(h1)
 do = self.dropout(h1)
 logits = self.hidden_to_logits(do)
+
+
+logits = parser.model(train_x)
+loss = loss_func(logits,train_y)
+# Backward pass  Auto differntiation not much of an worry
+loss.backward()
+#Update using optimizer after calculating loss
+optimizer.step()
