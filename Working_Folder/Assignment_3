@@ -14,7 +14,7 @@ if transition == "RA":
 
 
 ## Pytorch - nn 
-self.embed_to_hidden = torch.nn.Linear(embed_size,hidden_size)
+self.embed_to_hidden = torch.nn.Linear(embed_size*self.n_features,hidden_size)
 self.embed_to_hidden.weight = nn.init.xavier_uniform_(self.embed_to_hidden.weight)
 self.dropout = nn.Dropout(p=dropout_prob)
 self.hidden_to_logits = torch.nn.Linear(hidden_size, n_classes, bias=True)
@@ -25,7 +25,7 @@ x = x_embed.view(t.shape[0],-1)
 
 embed_layer = self.embedding_lookup(t)
 h1 = self.embed_to_hidden(embed_layer)
-h1 = nn.ReLU(h1)
+h1 = nn.functional.relu(h1)
 do = self.dropout(h1)
 logits = self.hidden_to_logits(do)
 
