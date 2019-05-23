@@ -29,6 +29,9 @@ h1 = nn.ReLU(h1)
 do = self.dropout(h1)
 logits = self.hidden_to_logits(do)
 
+optimizer = torch.optim.Adam(parser.model.parameters(),lr=lr)
+loss_func = nn.CrossEntropyLoss()  
+
 
 logits = parser.model(train_x)
 loss = loss_func(logits,train_y)
