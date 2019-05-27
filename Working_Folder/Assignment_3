@@ -11,6 +11,19 @@ if transition == "LA":
 if transition == "RA":
   self.dependencies.append((self.stack[-2],self.stack[-1]))
   self.stack.pop(-1)
+  
+
+partial_parses = [PartialParse(sentence) for sentence in sentences]
+unfinished_parses = partial_parses[:]
+pbar = tqdm(total=len(unfinished_parses),desc='Parsing')
+while len(unfinished_parses) > 0:
+    mini_batch = unfinished_parses[:batch_size]
+    for parser,parser_next_step in zip(mini_batch,model.predict(mini_batch)):
+        parser.parse_step(parser_next_step)
+        if parser.is_parsed():
+            unfinished_parses.remove(parser)
+            pbar.update(1)
+dependencies = [parser.dependencies for parser in partial_parses]
 
 
 ## Pytorch - nn 
@@ -39,3 +52,19 @@ loss = loss_func(logits,train_y)
 loss.backward()
 #Update using optimizer after calculating loss
 optimizer.step()
+
+
+
+## Assignment  - 4
+
+max_len = np.max(np.array([len(sent) for sent in sample_l]))
+
+for sent in sample_l:
+  
+  if len(sent) != max_len:
+    
+    while len(sent) < max_len:
+      sent.append(pad_token)
+          
+  else:
+     pass
