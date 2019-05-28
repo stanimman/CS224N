@@ -76,4 +76,4 @@ self.encoder = nn.LSTM(input_size=embed_size, hidden_size=hidden_size,bidirectio
 self.decoder = nn.LSTM(input_size=embed_size, hidden_size=hidden_size,bidirectional= False)
 self.h_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
 self.c_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
-self.att_projection =  nn.Linear(hidden_size.T,2*hidden_size,bias=False)
+self.att_projection =  nn.Linear(1,2*hidden_size,bias=False)
