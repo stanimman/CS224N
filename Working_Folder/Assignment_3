@@ -68,3 +68,7 @@ for sent in sample_l:
           
   else:
      pass
+     
+self.source = torch.nn.Embedding(len(vocab.src), embed_size, padding_idx=src_pad_token_idx)
+self.target = torch.nn.Embedding(len(vocab.tgt), embed_size, padding_idx=tgt_pad_token_idx)
+        
