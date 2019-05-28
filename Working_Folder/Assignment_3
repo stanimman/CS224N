@@ -71,4 +71,9 @@ for sent in sample_l:
      
 self.source = torch.nn.Embedding(len(vocab.src), embed_size, padding_idx=src_pad_token_idx)
 self.target = torch.nn.Embedding(len(vocab.tgt), embed_size, padding_idx=tgt_pad_token_idx)
-        
+
+self.encoder = nn.LSTM(input_size=embed_size, hidden_size=hidden_size,bidirectional= True)
+self.decoder = nn.LSTM(input_size=embed_size, hidden_size=hidden_size,bidirectional= False)
+self.h_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
+self.c_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
+self.att_projection =  nn.Linear(hidden_size.T,hidden_size,bias=False)
