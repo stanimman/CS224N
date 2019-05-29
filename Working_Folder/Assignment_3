@@ -76,7 +76,7 @@ self.encoder = nn.LSTM(input_size=embed_size, hidden_size=hidden_size,bidirectio
 self.decoder = nn.LSTM(input_size=embed_size, hidden_size=hidden_size,bidirectional= False)
 self.h_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
 self.c_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
-self.att_projection =  nn.Linear(1,2*hidden_size,bias=False)
+self.att_projection =  nn.Linear(2*hidden_size,hidden_size,bias=False)
 self.combined_output_projection  = nn.Linear(3*hidden_size,hidden_size,bias=False)
 self.target_vocab_projection = nn.Linear(hidden_size,len(vocab.tgt),bias=False)
 
@@ -91,3 +91,7 @@ init_decoder_hidden = self.h_projection(last_hidden)
 last_cell  = torch.cat((last_cell[0],last_cell[1]),1)
 init_decoder_cell = self.c_projection(last_cell)
 dec_init_state = tuple(init_decoder_hidden,init_decoder_cell)
+
+
+ enc_hiddens_proj = self.att_projection (enc_hiddens)
+Y = self.model_embeddings.source(target_padded)
