@@ -73,7 +73,7 @@ self.source = torch.nn.Embedding(len(vocab.src), embed_size, padding_idx=src_pad
 self.target = torch.nn.Embedding(len(vocab.tgt), embed_size, padding_idx=tgt_pad_token_idx)
 
 self.encoder = nn.LSTM(input_size=embed_size, hidden_size=hidden_size,bidirectional= True)
-self.decoder = nn.LSTM(input_size=embed_size, hidden_size=hidden_size,bidirectional= False)
+self.decoder = nn.LSTM(input_size=embed_size+hidden_size, hidden_size=hidden_size,bidirectional= False)
 self.h_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
 self.c_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
 self.att_projection =  nn.Linear(2*hidden_size,hidden_size,bias=False)
@@ -93,5 +93,12 @@ init_decoder_cell = self.c_projection(last_cell)
 dec_init_state = tuple(init_decoder_hidden,init_decoder_cell)
 
 
- enc_hiddens_proj = self.att_projection (enc_hiddens)
+enc_hiddens_proj = self.att_projection (enc_hiddens)
 Y = self.model_embeddings.source(target_padded)
+for Y_t in torch.split(Y,1,dim=0):
+          Y_t = torch.squeeze(Y_t)
+          Ybar_t = torch.cat((Y_t,o_prev,) 1)
+          
+          
+
+
