@@ -99,6 +99,17 @@ for Y_t in torch.split(Y,1,dim=0):
           Y_t = torch.squeeze(Y_t)
           Ybar_t = torch.cat((Y_t,o_prev,) 1)
           
+
+_,(dec_hidden, dec_cell) = self.decode(Ybar_t,dec_state)
+un_dec_hidden = torch.unsqueeze(dec_hidden,2)
+et = torch.bmm(enc_hiddens_proj,un_dec_hidden)
+e_t = torch.squeeze(et,2)
+
+
+alpha_t = F.softmax(e_t,1)
+un_alpha_t = torch.unsqueeze(alpha_t,1)
+a_t = torch.bmm(un_alpha_t,enc_hiddens)
+a_t = torch.squeeze(a_t,1)
           
 
 
