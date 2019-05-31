@@ -79,6 +79,7 @@ self.c_projection = nn.Linear(2*hidden_size,hidden_size,bias=False)
 self.att_projection =  nn.Linear(2*hidden_size,hidden_size,bias=False)
 self.combined_output_projection  = nn.Linear(3*hidden_size,hidden_size,bias=False)
 self.target_vocab_projection = nn.Linear(hidden_size,len(vocab.tgt),bias=False)
+self.dropout = nn.Dropout(self.dropout_rate)
 
 
 X = self.model_embeddings.source(source_padded)
@@ -98,18 +99,32 @@ Y = self.model_embeddings.source(target_padded)
 for Y_t in torch.split(Y,1,dim=0):
           Y_t = torch.squeeze(Y_t)
           Ybar_t = torch.cat((Y_t,o_prev,) 1)
+          dec_state, o_t, e_t  = step(Ybar_t,
+                                                  dec_state,
+                                                  enc_hiddens,
+                                                  enc_hiddens_proj,
+                                                  enc_masks)
+          (dec_hidden, dec_cell) = dec_state
+          combined_outputs.append(o_t)
+          o_prev = o_t
           
+combined_outputs = torch.stack(combined_outputs)
 
-_,(dec_hidden, dec_cell) = self.decode(Ybar_t,dec_state)
+_,dec_state = self.decode(Ybar_t,dec_state)
+(dec_hidden, dec_cell) = dec_state
 un_dec_hidden = torch.unsqueeze(dec_hidden,2)
 et = torch.bmm(enc_hiddens_proj,un_dec_hidden)
 e_t = torch.squeeze(et,2)
+
+
 
 
 alpha_t = F.softmax(e_t,1)
 un_alpha_t = torch.unsqueeze(alpha_t,1)
 a_t = torch.bmm(un_alpha_t,enc_hiddens)
 a_t = torch.squeeze(a_t,1)
-          
+U_t = torch.cat(dec_hidden,a_t,1)
+V_t = self.combined_output_projection(U_t)
+O_t = self.dropout(torch.tanh(V_t))
 
 
